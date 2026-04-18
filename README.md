@@ -1,53 +1,57 @@
-# Muraqaba (مراقبة) — Daily Worship Tracker 🕌
+# 🌿 مراقبة | Muraqaba 
 
-**Muraqaba** is an offline-first Progressive Web App (PWA) for tracking daily Islamic worship and acts of obedience, based on the scoring system from the *Alhusoon Alkhamsa* tradition.
+**Muraqaba** is a bilingual (Arabic/English), privacy-first Progressive Web App (PWA) designed to help Muslims track and maintain their daily worship, habits, and Islamic goals. 
 
----
-
-## 🌟 Features
-
-* **Daily Checklist** — Organized by prayer time. Tap each item to mark it done.
-* **Live Scoring** — Points calculated in real time with a circular progress ring.
-* **5 Prayers Tracked** — Fajr, Dhuhr, Asr, Maghrib, Isha — each with 4 sub-items (Congregation, Sunnah, Dhikr, Nafilah/Witr).
-* **4 Worship Sections:**
-  - 🕌 Prayers (60 pts max)
-  - 🌿 Daily Manners / Adhkar (7 pts)
-  - 📚 Seeking Knowledge (20 pts — **optional, toggle in Settings**)
-  - 📖 Quran (9 pts)
-  - ☀️ Sunnah Acts (7 pts)
-* **Weekly View** — Bar chart + daily breakdown for the last 7 days.
-* **Streak Tracking** — Consecutive days with any activity logged.
-* **Knowledge Section Toggle** — In Settings, cleanly show or hide the knowledge section (with live max-score update).
-* **Bilingual** — Full Arabic (RTL) and English (LTR) support with Hijri date.
-* **Offline-First PWA** — Installable on iOS and Android via Service Worker.
-* **Data Portability** — Export/import JSON backups. No cloud required.
+**مراقبة** هو تطبيق ويب تقدمي (PWA) ثنائي اللغة (عربي/إنجليزي) يهدف إلى مساعدة المسلم على متابعة ومحاسبة نفسه في العبادات، السنن، والعادات الإسلامية اليومية. جميع بياناتك تُحفظ على جهازك فقط.
 
 ---
 
-## 🚀 Running Locally
+## 🌍 English
 
-No build tools needed. Pure HTML + CSS + JS.
+### 📖 About The Project
+Muraqaba is built as a lightweight, installable web application that functions entirely offline. It provides a structured daily checklist based on the Sunnah, covering everything from the obligatory prayers and their specific Sunan, to daily manners, seeking knowledge, and customizable Quran goals.
 
-1. Place `index.html`, `manifest.json`, and `sw.js` in a folder.
-2. Open via a local server (e.g. VS Code Live Server, or `python3 -m http.server`).
-3. For PWA install prompt, use HTTPS or localhost.
+### ✨ Features
+* 🕌 **Detailed Prayer Tracking:** Tracks the 5 daily prayers plus Night Qiyam. Includes specific sub-items for each prayer (Sunnah Qabliyah/Badiyah, First Congregation, Post-prayer Dhikr).
+* 🧕 **Women's Prayer Mode:** A toggle in settings to replace "First Congregation at the Mosque" with "Praying on time at home" without losing points.
+* 📖 **Customizable Quran Goals:** Set your own daily page goals for Memorization (Hifz), Recitation (Tilawah), and Revision (Muraja'ah). Set to `0` to hide a goal.
+* 🌌 **Customizable Qiyam:** Define the number of Rak'ahs you want to pray at night.
+* 🌿 **Daily Manners:** Track basic Islamic habits like waking up, wudu, eating/drinking du'as, entering/leaving home, and sleeping.
+* 📚 **Seeking Knowledge Section:** An optional, toggleable section for tracking class attendance, reviewing notes, kindness to parents, and mastering worldly skills.
+* ☀️ **Sunnah Acts & Fasting:** Track Monday/Thursday fasting, Surah Al-Kahf, Salawat, Miswak, Perfume, and early attendance to Jumu'ah.
+* 📊 **Analytics & Streaks:** View a 7-day weekly breakdown, total score, daily percentages, and your consecutive day streak.
+* 🔒 **100% Private (Local Storage):** No databases, no tracking. All data is saved directly in your browser's local storage.
+* 💾 **Import & Export:** Easily back up your data by exporting it as a `.json` file and importing it on another device.
+* 📱 **Installable (PWA):** Can be added to your mobile home screen or desktop as a native app and works offline.
+
+### 🛠️ Tech Stack
+* HTML5, CSS3, Vanilla JavaScript
+* Progressive Web App (PWA) with Service Worker (`sw.js`) and Web Manifest.
 
 ---
 
-## 📊 Scoring System
+## 🇸🇦 العربية
 
-| Section | Max Points |
-|---|---|
-| Prayers × 5 (Jamaa + Sunnah + Adhkar + Nafilah) | 60 |
-| Daily Manners (7 items) | 7 |
-| Seeking Knowledge *(optional)* | 20 |
-| Quran (Hifz + Reading + Listening) | 9 |
-| Sunnah Acts (7 items) | 7 |
-| **Total (with Knowledge)** | **83** |
-| **Total (without Knowledge)** | **63** |
+### 📖 عن المشروع
+"مراقبة" هو تطبيق ويب خفيف يمكن تثبيته على الهاتف أو الحاسوب، ويعمل بالكامل بدون إنترنت. يقدم التطبيق قائمة يومية مبنية على السنة النبوية لتتبع الصلوات وسننها الرواتب، الآداب والأذكار اليومية، طلب العلم، وأهداف القرآن الكريم بمرونة تامة.
+
+### ✨ المميزات
+* 🕌 **متابعة دقيقة للصلوات:** تتبع الصلوات الخمس وقيام الليل، مع بنود مخصصة لكل صلاة (السنة القبلية، السنة البعدية، إدراك الجماعة الأولى، وأذكار ما بعد الصلاة).
+* 🧕 **وضع صلاة المرأة:** خيار في الإعدادات لاستبدال "إدراك الجماعة الأولى في المسجد" بـ "الصلاة في وقتها في البيت" بنفس عدد النقاط.
+* 📖 **أهداف قرآنية مخصصة:** حدد عدد الصفحات اليومية التي تطمح لها في (الحفظ، التلاوة، والمراجعة). يمكنك وضع القيمة `0` لإخفاء أي هدف.
+* 🌌 **تخصيص قيام الليل:** حدد عدد الركعات التي تنوي صلاتها يومياً من الإعدادات.
+* 🌿 **الآداب والأذكار:** تتبع الآداب اليومية كأذكار الاستيقاظ، الوضوء، الدخول والخروج من المنزل والمسجد، أذكار الطعام، والنوم.
+* 📚 **قسم طلب العلم:** قسم اختياري (يمكن إخفاؤه) لمتابعة حضور مجالس العلم، المذاكرة، بر الوالدين، وإتقان العمل الدنيوي.
+* ☀️ **السنن والصيام:** تتبع صيام الإثنين والخميس، قراءة سورة الكهف، الصلاة على النبي، السواك، التطيب، والتبكير للجمعة.
+* 📊 **الإحصائيات والسلاسل:** عرض نتائج آخر 7 أيام مع رسم بياني، النسبة المئوية للإنجاز اليومي، وعداد الأيام المتواصلة (Streak).
+* 🔒 **خصوصية تامة (تخزين محلي):** لا توجد خوادم ولا يتم جمع أي بيانات. جميع معلوماتك تُحفظ في متصفح جهازك فقط.
+* 💾 **التصدير والاستيراد:** احتفظ بنسخة احتياطية من بياناتك بصيغة `.json` واسترجعها في أي وقت أو انقلها لجهاز آخر.
+* 📱 **تطبيق تقدمي (PWA):** يمكن تثبيته على شاشة الهاتف الرئيسية ليعمل كتطبيق مستقل وبدون الحاجة للاتصال بالإنترنت.
 
 ---
 
-## رسالة بالعربية
+## 🚀 How to Run / طريقة التشغيل
 
-**مراقبة** تطبيق لتتبع العبادات اليومية بنظام نقاط مبني على منهجية الحصون الخمسة. يشمل الصلوات الخمس بتفاصيلها، وآداب يومية، وورد قرآني، وسننًا نبوية.
+1. Clone the repository / قم بنسخ المستودع:
+   ```bash
+   git clone [https://github.com/yourusername/muraqaba.git](https://github.com/yourusername/muraqaba.git)
