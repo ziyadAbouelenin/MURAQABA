@@ -86,18 +86,9 @@ button:active{transform:scale(.97)}.bp{background:var(--gd);color:#fff}.bo{backg
 hr{border:0;border-top:1px solid var(--bdr);margin:18px 0}
 input[type=text],input[type=number],select{padding:9px 11px;border:1px solid var(--bdr);border-radius:8px;font-size:13px;font-family:var(--fb);background:var(--sur);color:var(--tx);outline:none;width:100%}
 input:focus,select:focus{border-color:var(--gm)}
-.grow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.grow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--bdr)}
 .grow:last-child{border-bottom:none}
-.gtbadge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0}
-.gt-hifz{background:#e8f5ee;color:#1a5c38}.gt-recite{background:#e8f0ff;color:#4a2d8a}
-.gt-revise{background:#fff3e0;color:#8a5a00}.gt-listen{background:#e0f4ff;color:#005a8a}
 .glbl{flex:1;font-size:13px;font-weight:500}
-.gpts{font-size:11px;font-weight:700;color:var(--gold);background:var(--goldp);padding:2px 7px;border-radius:6px;flex-shrink:0}
-.gdel{background:none;border:none;color:#ccc;font-size:20px;padding:0 4px;cursor:pointer;flex-shrink:0;line-height:1;border-radius:4px}
-.gdel:hover{color:var(--red)}
-.gaform{background:var(--sur2);border:1px dashed var(--bdr);border-radius:12px;padding:14px;margin-top:12px}
-.gaform label{font-size:11px;font-weight:600;color:var(--txm);display:block;margin-bottom:4px;margin-top:10px}
-.gaform label:first-of-type{margin-top:0}
 </style>
 </head>
 <body>
@@ -127,15 +118,38 @@ input:focus,select:focus{border-color:var(--gm)}
   <div class="tabs">
     <div class="tab active" data-tab="today" id="tabToday">اليوم</div>
     <div class="tab" data-tab="week" id="tabWeek">الأسبوع</div>
-    <div class="tab" data-tab="settings" id="tabSettings">الإعدادات</div>
   </div>
 </div>
 <main id="main"></main>
 <div id="toast"></div>
-<!-- Settings Modal -->
+
 <div class="mo" id="settingsModal">
   <div class="modal">
     <div class="mhead"><h2 id="mTitle">الإعدادات</h2><button class="xbtn" onclick="closeModal('settingsModal')">&#215;</button></div>
+    
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--gd);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)" id="mSecGoals">الأهداف اليومية (القرآن والقيام)</div>
+      
+      <div class="grow">
+        <span class="glbl" id="lbl_hifz">حفظ القرآن (صفحات)</span>
+        <input type="number" id="inp_qHifz" min="0" step="0.5" style="width:80px;text-align:center" onchange="updQ('qHifz', this.value)">
+      </div>
+      <div class="grow">
+        <span class="glbl" id="lbl_recite">تلاوة القرآن (صفحات)</span>
+        <input type="number" id="inp_qRecite" min="0" step="1" style="width:80px;text-align:center" onchange="updQ('qRecite', this.value)">
+      </div>
+      <div class="grow">
+        <span class="glbl" id="lbl_revise">مراجعة القرآن (صفحات)</span>
+        <input type="number" id="inp_qRevise" min="0" step="0.5" style="width:80px;text-align:center" onchange="updQ('qRevise', this.value)">
+      </div>
+      <div class="grow">
+        <span class="glbl" id="lbl_qiyam">قيام الليل (ركعات)</span>
+        <input type="number" id="inp_qQiyam" min="0" step="2" style="width:80px;text-align:center" onchange="updQ('qQiyam', this.value)">
+      </div>
+      <p style="font-size:12px;color:var(--txm);line-height:1.7;margin-top:8px" id="mGoalsHint">أدخل 0 لإخفاء الهدف من القائمة اليومية.</p>
+    </div>
+    <hr>
+
     <div style="margin-bottom:16px">
       <div style="font-size:13px;font-weight:700;color:var(--gd);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bdr)" id="mSecK">قسم طلب العلم</div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px">
@@ -171,7 +185,7 @@ input:focus,select:focus{border-color:var(--gm)}
     </div>
   </div>
 </div>
-<!-- Tutorial Modal -->
+
 <div class="mo" id="tutorialModal">
   <div class="modal">
     <div class="mhead"><h2 id="tutTitle">كيف تستخدم مراقبة؟</h2><button class="xbtn" onclick="closeModal('tutorialModal')">&#215;</button></div>
@@ -179,7 +193,7 @@ input:focus,select:focus{border-color:var(--gm)}
     <button class="bp" style="width:100%;margin-top:20px" onclick="closeModal('tutorialModal')" id="tutClose">حسناً، فهمت</button>
   </div>
 </div>
-<!-- Confirm Modal -->
+
 <div class="mo" id="confirmModal">
   <div class="modal">
     <div class="mhead"><h2 id="confTitle">تأكيد</h2><button class="xbtn" onclick="resolveConfirm(false)">&#215;</button></div>
@@ -190,41 +204,133 @@ input:focus,select:focus{border-color:var(--gm)}
     </div>
   </div>
 </div>
+
 <script>
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+
 const PRAYERS=[
-  {id:'fajr',icon:'🌅',items:[{key:'sunnah_qabli',pts:2},{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'adhkar_sabah',pts:2}]},
+  {id:'sobh',icon:'🌅',items:[{key:'sunnah_qabli',pts:2},{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'adhkar_sabah',pts:2}]},
   {id:'dhuhr',icon:'☀️',items:[{key:'sunnah_qabli',pts:2},{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'sunnah_badi',pts:2}]},
   {id:'asr',icon:'🌤️',items:[{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'adhkar_masa',pts:2}]},
   {id:'maghrib',icon:'🌆',items:[{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'sunnah_badi',pts:2}]},
-  {id:'isha',icon:'🌙',items:[{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'sunnah_badi',pts:2},{key:'witr_qiyam',pts:4}]},
+  {id:'isha',icon:'🌙',items:[{key:'jamaa',pts:2},{key:'adhkar_salah',pts:2},{key:'sunnah_badi',pts:2}]},
+  {id:'night',icon:'🌌',items:[{key:'wird_night',pts:4},{key:'witr',pts:1}]},
 ];
-const PRAYER_MAX=PRAYERS.reduce((s,p)=>s+p.items.reduce((ss,i)=>ss+i.pts,0),0);
-const MANNERS=[{id:'wake_up',pts:1},{id:'salah_iqama',pts:1},{id:'clothes_dua',pts:1},{id:'wudu',pts:1},{id:'home_dua',pts:1},{id:'mosque_dua',pts:1},{id:'walk_mosque',pts:1},{id:'food_dua',pts:1},{id:'ride_dua',pts:1},{id:'sleep_dua',pts:1}];
+
+const MANNERS=[{id:'wake_up',pts:1},{id:'restroom',pts:1},{id:'clothes_dua',pts:1},{id:'wudu',pts:1},{id:'home_dua',pts:1},{id:'mosque_dua',pts:1},{id:'walk_mosque',pts:1},{id:'food_dua',pts:1},{id:'ride_dua',pts:1},{id:'sleep_dua',pts:1}];
 const MANNERS_MAX=10;
+
 const KNOWLEDGE=[{id:'attend_class',pts:5},{id:'review_class',pts:5},{id:'birr_walidain',pts:5},{id:'study_work',pts:5}];
 const KNOWLEDGE_MAX=20;
+
 const FASTING=[{id:'fast_mon_thu',pts:5}];
 const FASTING_MAX=5;
-const SUNNAH=[{id:'sunan_fitra',pts:1},{id:'ghusl',pts:1},{id:'medicine',pts:1},{id:'miswak',pts:1},{id:'dhikr_takbir',pts:1},{id:'surah_kahf',pts:1},{id:'salat_duha',pts:1}];
+
+const SUNNAH=[{id:'sunan_fitra',pts:1},{id:'ghusl',pts:1},{id:'perfume',pts:1},{id:'miswak',pts:1},{id:'early_jumuah',pts:1},{id:'surah_kahf',pts:1},{id:'salawat_100',pts:1}];
 const SUNNAH_MAX=7;
-const DQ=[{id:'q_hifz',type:'hifz',label:'حفظ نصف صفحة',pts:2},{id:'q_recite',type:'recite',label:'تلاوة ربع حزب',pts:2},{id:'q_revise',type:'revise',label:'مراجعة ربع حزب',pts:2}];
-const D={ar:{today:'اليوم',week:'الأسبوع',settings:'الإعدادات',langBtn:'EN',np:'اسمك',heroLbl:'نقاط اليوم',heroMaxLbl:'المجموع الكلي',fajr:'الفجر',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',sunnah_qabli_fajr:'السنة القبلية (ركعتان)',sunnah_qabli_dhuhr:'السنة القبلية (أربع ركعات)',sunnah_qabli:'السنة القبلية',jamaa:'الجماعة الأولى',jamaa_f:'الصلاة في وقتها في البيت',adhkar_salah:'أذكار بعد الصلاة',adhkar_sabah:'أذكار الصباح',adhkar_masa:'أذكار المساء',sunnah_badi:'السنة البعدية (ركعتان)',witr_qiyam:'صلاة الوتر / ركعتا القيام',sp:'🕌 الصلوات',sm:'🌿 الآداب والأذكار',sk:'📚 طلب العلم',sq:'📖 القرآن',sf:'🌙 الصيام',ss:'☀️ سنن',wake_up:'الاستيقاظ',salah_iqama:'الحضور للصلاة مع الإقامة',clothes_dua:'دعاء لبس الثوب وخلعه',wudu:'الوضوء',home_dua:'دعاء دخول المنزل والخروج منه',mosque_dua:'دعاء دخول المسجد والخروج منه',walk_mosque:'المشي إلى المسجد',food_dua:'دعاء الأكل والشرب',ride_dua:'دعاء الركوب',sleep_dua:'دعاء النوم',attend_class:'حضور مجالس العلم',review_class:'مذاكرة دروس العلم',birr_walidain:'بر الوالدين',study_work:'مذاكرة الدراسة أو إتقان مهارة في العمل',fast_mon_thu:'صيام الإثنين والخميس',sunan_fitra:'سنن الفطرة',ghusl:'الغسل',medicine:'الطب (الحبة السوداء وغيرها)',miswak:'السواك',dhikr_takbir:'التكبير والذكر المطلق',surah_kahf:'سورة الكهف (يوم الجمعة)',salat_duha:'صلاة الضحى',pts:'ن',qt_hifz:'حفظ',qt_recite:'تلاوة',qt_revise:'مراجعة',qt_listen:'استماع',q_hint:'أضف أهدافك القرآنية — حفظ، تلاوة، مراجعة، استماع.',q_add:'+ إضافة هدف',q_lph:'مثال: حفظ صفحة، قراءة جزء',q_tlbl:'النوع',q_plbl:'النقاط',q_empty:'لا توجد أهداف. أضف هدفاً أدناه.',q_del:'حذف',streakT:'سلسلة الأيام',streakL:'يوم متواصل',dn:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],wt:'نتائج الأسبوع',ws:'آخر ٧ أيام',todayT:'اليوم',wkTotal:'مجموع الأسبوع',wkBest:'أفضل يوم',wkAvg:'المتوسط',wkBreak:'تفاصيل الأيام',eok:'تم التصدير ✓',iok:'تم الاستيراد ✓',ierr:'فشل الاستيراد.',rw:'سيتم مسح جميع البيانات نهائياً. هل أنت متأكد؟',rok:'تمت إعادة التعيين ✓',ct:'تأكيد',cok:'تأكيد',cno:'إلغاء',
-  tutTitle:'كيف تستخدم مراقبة؟',tutClose:'حسناً، فهمت',
-  tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🕌 الصلوات</h3><p>خمس صلوات، لكل صلاة بنودها الخاصة وفق السنة: السنة القبلية، الجماعة الأولى، الأذكار، وما يخص كل صلاة. لفجر: أذكار الصباح. للعصر: أذكار المساء. للعشاء: الوتر.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌿 الآداب والأذكار</h3><p>عشر بنود يومية: الاستيقاظ، الوضوء، أدعية الدخول والخروج من المنزل والمسجد، المشي، الأكل والشرب، الركوب، والنوم.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">📚 طلب العلم</h3><p>قسم اختياري (٢٠ نقطة) يشمل: حضور مجالس العلم، المذاكرة، بر الوالدين، وإتقان مهارة في العمل. يمكن إخفاؤه من الإعدادات.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">📖 القرآن</h3><p>أهداف قرآنية مرنة تضعها أنت — حفظ، تلاوة، مراجعة، أو استماع. أضف أهدافك وحدد نقاطها من تبويب الإعدادات.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌙 الصيام</h3><p>تتبع صيام الإثنين والخميس (٥ نقاط).</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">☀️ سنن</h3><p>سبع سنن يومية: سنن الفطرة، الغسل، الطب، السواك، التكبير، سورة الكهف، وصلاة الضحى.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">📊 الأسبوع</h3><p>عرض تفصيلي لنتائج آخر ٧ أيام مع مخطط شريطي ومتوسط أسبوعي وسلسلة الأيام المتواصلة.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ الإعدادات</h3><p>من تبويب الإعدادات: أضف أهدافك القرآنية، فعّل أو أخفِ قسم طلب العلم، وفعّل وضع الصلاة في البيت للنساء. يمكنك تصدير بياناتك واستيرادها للحفاظ عليها.</p>`,mTitle:'الإعدادات',mSecK:'قسم طلب العلم',mKDesc:'إظهار قسم طلب العلم في القائمة اليومية',mKon:'القسم مُفعَّل — يضيف ٢٠ نقطة للمجموع اليومي.',mKoff:'القسم مُخفى — المجموع الكلي أقل بـ٢٠ نقطة.',mSecG:'الصلاة',mGDesc:'أصلي في البيت (للنساء)',mGon:'"الجماعة الأولى" مُستبدَلة بـ"الصلاة في وقتها في البيت" — بنفس النقاط.',mGoff:'"الجماعة الأولى" مُفعَّلة — تتبع حضور المسجد.',mSecD:'البيانات',mExp:'تصدير ⬇',mImp:'استيراد ⬆',mSecR:'⚠️ إعادة تعيين',mRDesc:'مسح جميع البيانات. سيتم تصدير نسخة احتياطية أولاً.',mRBtn:'إعادة تعيين الكل',maxWith:'المجموع الكلي',maxWO:'المجموع بدون القسم',ptsuf:'نقطة',descLbl:'الوصف'},
-en:{today:'Today',week:'Week',settings:'Settings',langBtn:'ع',np:'Your name',heroLbl:"Today's Score",heroMaxLbl:'Daily Max',fajr:'Fajr',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',sunnah_qabli_fajr:"Sunnah before Fajr (2 rak'ahs)",sunnah_qabli_dhuhr:"Sunnah before Dhuhr (4 rak'ahs)",sunnah_qabli:'Sunnah before prayer',jamaa:"First Congregation",jamaa_f:'Praying on time at home',adhkar_salah:'Post-prayer Dhikr',adhkar_sabah:'Morning Adhkar',adhkar_masa:'Evening Adhkar',sunnah_badi:"Sunnah after prayer (2 rak'ahs)",witr_qiyam:'Witr / Night prayer',sp:'🕌 Prayers',sm:'🌿 Daily Manners',sk:'📚 Seeking Knowledge',sq:'📖 Quran',sf:'🌙 Fasting',ss:'☀️ Sunnah Acts',wake_up:'Waking up (for Fajr)',salah_iqama:'Attending prayer at Iqama',clothes_dua:"Dressing du'a",wudu:'Wudu (ablution)',home_dua:"Home du'a",mosque_dua:"Mosque du'a",walk_mosque:'Walking to mosque',food_dua:"Eating du'a",ride_dua:"Riding du'a",sleep_dua:"Sleeping du'a",attend_class:'Attending knowledge gatherings',review_class:'Review class notes',birr_walidain:'Kindness to parents',study_work:'Study or master a skill at work',fast_mon_thu:'Fasting Mon & Thu',sunan_fitra:'Sunan of Fitrah',ghusl:'Ghusl (ritual bath)',medicine:'Herbal medicine',miswak:'Miswak',dhikr_takbir:'General dhikr & takbir',surah_kahf:'Surah Al-Kahf (Fridays)',salat_duha:'Duha prayer',pts:'pt',qt_hifz:'Memorise',qt_recite:'Recite',qt_revise:'Revise',qt_listen:'Listen',q_hint:'Add your daily Quran goals — memorise, recite, revise, listen.',q_add:'+ Add Goal',q_lph:'e.g. Memorise 1 page, Read 1 juz',q_tlbl:'Type',q_plbl:'Points',q_empty:'No goals yet. Add one below.',q_del:'Remove',streakT:'Streak',streakL:'day streak',dn:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wt:'Weekly Results',ws:'Last 7 days',todayT:'Today',wkTotal:'Week Total',wkBest:'Best Day',wkAvg:'Average',wkBreak:'Daily Breakdown',eok:'Exported ✓',iok:'Imported ✓',ierr:'Import failed.',rw:'All data will be permanently erased. Are you sure?',rok:'Reset complete ✓',ct:'Confirm',cok:'Confirm',cno:'Cancel',
-  tutTitle:'How to use Muraqaba',tutClose:'Got it!',
-  tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🕌 Prayers</h3><p>Five prayers, each with its correct Sunnah sub-items: Sunnah before, First Congregation, post-prayer Dhikr, and what's specific to each prayer — Morning Adhkar for Fajr, Evening Adhkar for Asr, Witr for Isha.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌿 Daily Manners</h3><p>Ten daily items: waking up, wudu, entering/leaving home and mosque, walking to the mosque, eating, drinking, riding, and sleeping du'as.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">📚 Seeking Knowledge</h3><p>Optional section (20 pts): attending knowledge gatherings, reviewing notes, honouring parents, and mastering a skill. Toggle it on or off in Settings.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">📖 Quran</h3><p>Fully flexible Quran goals you define yourself — memorise, recite, revise, or listen. Add goals and set their points in the Settings tab.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌙 Fasting</h3><p>Track Monday & Thursday fasting (5 pts).</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">☀️ Sunnah Acts</h3><p>Seven daily Sunnah items: Sunan of Fitrah, Ghusl, herbal medicine, Miswak, extra dhikr, Surah Al-Kahf, and Duha prayer.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">📊 Week Tab</h3><p>A detailed view of the last 7 days with a bar chart, weekly average, and consecutive day streak.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ Settings</h3><p>Add Quran goals, toggle the Knowledge section, enable home prayer mode for women, and export or import your data as a JSON backup.</p>`,mTitle:'Settings',mSecK:'Knowledge Section',mKDesc:'Show Knowledge section in daily checklist',mKon:'Section ON — adds 20 points to your daily max.',mKoff:'Section OFF — daily max is 20 points lower.',mSecG:'Prayer Mode',mGDesc:'I pray at home (for women)',mGon:'"Praying on time at home" replaces "First Congregation" — same points.',mGoff:'"First Congregation" mode is active.',mSecD:'Data',mExp:'Export ⬇',mImp:'Import ⬆',mSecR:'⚠️ Reset',mRDesc:'Erase all data. A backup will be exported first.',mRBtn:'Reset All Data',maxWith:'Daily maximum',maxWO:'Max without section',ptsuf:'points',descLbl:'Description'}};
+
+const D={
+  ar:{
+    today:'اليوم',week:'الأسبوع',langBtn:'EN',np:'اسمك',heroLbl:'نقاط اليوم',heroMaxLbl:'المجموع الكلي',
+    sobh:'الصبح',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',night:'الليل',
+    sunnah_qabli_sobh:'السنة القبلية (ركعتان)',sunnah_qabli_dhuhr:'السنة القبلية (أربع ركعات)',sunnah_qabli:'السنة القبلية',
+    jamaa:'الجماعة الأولى',jamaa_f:'الصلاة في وقتها في البيت',adhkar_salah:'أذكار بعد الصلاة',adhkar_sabah:'أذكار الصباح',adhkar_masa:'أذكار المساء',sunnah_badi:'السنة البعدية',witr:'الوتر',wird_night:'الورد (ربعين)',
+    sp:'🕌 الصلوات',sm:'🌿 الآداب والأذكار',sk:'📚 طلب العلم',sq:'📖 القرآن',sf:'🌙 الصيام',ss:'☀️ سنن',
+    wake_up:'الاستيقاظ',restroom:'الخلاء',clothes_dua:'لبس الثوب و خلعه',wudu:'الوضوء',home_dua:'دخول المنزل والخروج المقيدة',mosque_dua:'المسجد دخول و خروج الاذكار',walk_mosque:'المشى إلى المسجد',food_dua:'الأكل والشرب',ride_dua:'الركوب',sleep_dua:'النوم',
+    attend_class:'حضور دروس العلم',review_class:'مذاكرة دروس العلم',birr_walidain:'بر الوالدين',study_work:'مذاكرة الدراسة أو إتقان العمل الدنيوي (خمس ساعات)',
+    fast_mon_thu:'صيام الإثنين والخميس',
+    sunan_fitra:'سنن الفطرة',ghusl:'الغسل',perfume:'الطيب',miswak:'السواك',early_jumuah:'التبكير جمعة',surah_kahf:'سورة الكهف',salawat_100:'الصلاة على النبي 100',
+    pts:'ن',qt_hifz:'حفظ',qt_recite:'تلاوة',qt_revise:'مراجعة',
+    q_page_unit:'صفحة',q_empty:'لا توجد أهداف قرآنية نشطة. أضفها من الإعدادات (⚙️).',
+    streakT:'سلسلة الأيام',streakL:'يوم متواصل',dn:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],wt:'نتائج الأسبوع',ws:'آخر ٧ أيام',todayT:'اليوم',wkTotal:'مجموع الأسبوع',wkBest:'أفضل يوم',wkAvg:'المتوسط',wkBreak:'تفاصيل الأيام',eok:'تم التصدير ✓',iok:'تم الاستيراد ✓',ierr:'فشل الاستيراد.',rw:'سيتم مسح جميع البيانات نهائياً. هل أنت متأكد؟',rok:'تمت إعادة التعيين ✓',ct:'تأكيد',cok:'تأكيد',cno:'إلغاء',
+    tutTitle:'كيف تستخدم مراقبة؟',tutClose:'حسناً، فهمت',
+    tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ الإعدادات (الأهداف اليومية)</h3><p>اضغط على أيقونة الترس ⚙️ في الأعلى لتعيين عدد صفحات الحفظ والتلاوة، وعدد ركعات قيام الليل. ضع 0 لإخفاء الهدف.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🕌 الصلوات</h3><p>الصلوات المفروضة وقيام الليل، لكل صلاة بنودها الخاصة.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌿 الآداب والأذكار</h3><p>عشر بنود يومية: الاستيقاظ، الوضوء، أدعية الدخول والخروج، المشي للمسجد، الأكل والشرب، الركوب، والنوم.</p>`,
+    mTitle:'الإعدادات',mSecK:'قسم طلب العلم',mKDesc:'إظهار قسم طلب العلم في القائمة اليومية',mKon:'القسم مُفعَّل — يضيف ٢٠ نقطة.',mKoff:'القسم مُخفى.',mSecG:'الصلاة',mGDesc:'أصلي في البيت (للنساء)',mGon:'الصلاة في وقتها في البيت — مُفعَّل.',mGoff:'تتبع حضور الجماعة في المسجد.',mSecD:'البيانات',mExp:'تصدير ⬇',mImp:'استيراد ⬆',mSecR:'⚠️ إعادة تعيين',mRDesc:'مسح جميع البيانات نهائياً.',mRBtn:'إعادة تعيين الكل',
+    mSecGoals:'الأهداف اليومية (القرآن والقيام)',lbl_hifz:'حفظ القرآن (صفحات)',lbl_recite:'تلاوة القرآن (صفحات)',lbl_revise:'مراجعة القرآن (صفحات)',lbl_qiyam:'قيام الليل (ركعات)',mGoalsHint:'أدخل 0 لإخفاء الهدف من القائمة اليومية.'
+  },
+  en:{
+    today:'Today',week:'Week',langBtn:'ع',np:'Your name',heroLbl:"Today's Score",heroMaxLbl:'Daily Max',
+    sobh:'Sobh',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',night:'Night',
+    sunnah_qabli_sobh:"Sunnah before Sobh (2 rak'ahs)",sunnah_qabli_dhuhr:"Sunnah before Dhuhr (4 rak'ahs)",sunnah_qabli:'Sunnah before prayer',
+    jamaa:"First Congregation",jamaa_f:'Praying on time at home',adhkar_salah:'Post-prayer Dhikr',adhkar_sabah:'Morning Adhkar',adhkar_masa:'Evening Adhkar',sunnah_badi:"Sunnah after prayer",witr:'Witr',wird_night:"Nightly Wird (2 Rub')",
+    sp:'🕌 Prayers',sm:'🌿 Daily Manners',sk:'📚 Seeking Knowledge',sq:'📖 Quran',sf:'🌙 Fasting',ss:'☀️ Sunnah Acts',
+    wake_up:'Waking up',restroom:'Restroom / Toilet',clothes_dua:"Dressing / Undressing",wudu:'Wudu (ablution)',home_dua:"Home entering/leaving adhkar",mosque_dua:"Mosque entering/leaving adhkar",walk_mosque:'Walking to mosque',food_dua:"Eating and drinking",ride_dua:"Riding",sleep_dua:"Sleep",
+    attend_class:'Attending knowledge classes',review_class:'Reviewing knowledge classes',birr_walidain:'Kindness to parents',study_work:'Study or master worldly work (5 hours)',
+    fast_mon_thu:'Fasting Mon & Thu',
+    sunan_fitra:'Sunan of Fitrah',ghusl:'Ghusl (ritual bath)',perfume:'Perfume (Attar)',miswak:'Miswak',early_jumuah:"Early to Jumu'ah",surah_kahf:'Surah Al-Kahf',salawat_100:'Salawat on Prophet (100x)',
+    pts:'pt',qt_hifz:'Memorize',qt_recite:'Recite',qt_revise:'Revise',
+    q_page_unit:'pages',q_empty:'No active Quran goals. Set them in Settings (⚙️).',
+    streakT:'Streak',streakL:'day streak',dn:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wt:'Weekly Results',ws:'Last 7 days',todayT:'Today',wkTotal:'Week Total',wkBest:'Best Day',wkAvg:'Average',wkBreak:'Daily Breakdown',eok:'Exported ✓',iok:'Imported ✓',ierr:'Import failed.',rw:'All data will be permanently erased. Are you sure?',rok:'Reset complete ✓',ct:'Confirm',cok:'Confirm',cno:'Cancel',
+    tutTitle:'How to use Muraqaba',tutClose:'Got it!',
+    tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ Settings (Daily Goals)</h3><p>Click the gear icon ⚙️ to set your daily pages for memorizing, reciting, and Rak'ahs for Qiyam. Use 0 to hide any goal.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🕌 Prayers</h3><p>Daily prayers and Night worship, each with its correct Sunnah sub-items.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌿 Daily Manners</h3><p>Ten daily items: waking up, wudu, entering/leaving home and mosque, walking to the mosque, eating, drinking, riding, and sleeping.</p>`,
+    mTitle:'Settings',mSecK:'Knowledge Section',mKDesc:'Show Knowledge section in daily checklist',mKon:'Section ON — adds 20 points.',mKoff:'Section OFF.',mSecG:'Prayer Mode',mGDesc:'I pray at home (for women)',mGon:'Praying on time at home is ON.',mGoff:'Mosque congregation mode is ON.',mSecD:'Data',mExp:'Export ⬇',mImp:'Import ⬆',mSecR:'⚠️ Reset',mRDesc:'Permanently erase all data.',mRBtn:'Reset All Data',
+    mSecGoals:'Daily Goals (Quran & Qiyam)',lbl_hifz:'Memorize Quran (Pages)',lbl_recite:'Recite Quran (Pages)',lbl_revise:'Revise Quran (Pages)',lbl_qiyam:'Qiyam (Rak\'ahs)',mGoalsHint:'Set to 0 to hide from the daily list.'
+  }
+};
 const SK='muraqaba_v1',today=()=>new Date().toISOString().split('T')[0];
-function defS(){return{lang:'ar',userName:'',showKnowledge:true,prayAtHome:false,quranGoals:JSON.parse(JSON.stringify(DQ)),records:{},streakDays:[]};}
-function mig(s){if(!s.records)s.records={};if(!s.streakDays)s.streakDays=[];if(s.showKnowledge===undefined)s.showKnowledge=true;if(s.prayAtHome===undefined)s.prayAtHome=false;if(!s.quranGoals||!s.quranGoals.length)s.quranGoals=JSON.parse(JSON.stringify(DQ));return s;}
+
+function defS(){return{lang:'ar',userName:'',showKnowledge:true,prayAtHome:false,qHifz:0.5,qRecite:15,qRevise:0,qQiyam:2,records:{},streakDays:[]};}
+
+function mig(s){
+  if(!s.records)s.records={};
+  if(!s.streakDays)s.streakDays=[];
+  if(s.showKnowledge===undefined)s.showKnowledge=true;
+  if(s.prayAtHome===undefined)s.prayAtHome=false;
+  
+  if(s.quranGoals && s.quranGoals.length > 0) {
+      const h = s.quranGoals.find(g=>g.type==='hifz');
+      const rc = s.quranGoals.find(g=>g.type==='recite');
+      const rv = s.quranGoals.find(g=>g.type==='revise');
+      if(h) s.qHifz = h.pages || 0.5;
+      if(rc) s.qRecite = rc.pages || 15;
+      if(rv) s.qRevise = rv.pages || 0;
+      delete s.quranGoals; 
+  }
+  
+  if(s.qHifz===undefined) s.qHifz=0.5;
+  if(s.qRecite===undefined) s.qRecite=15;
+  if(s.qRevise===undefined) s.qRevise=0;
+  if(s.qQiyam===undefined) s.qQiyam=2;
+  
+  return s;
+}
+
 let raw=localStorage.getItem(SK),S=raw?mig(JSON.parse(raw)):defS(),curTab='today',_ps=false,_cr=null,_tt=null;
 function save(){if(_ps)return;_ps=true;requestAnimationFrame(()=>{localStorage.setItem(SK,JSON.stringify(S));_ps=false;});}
 const t=k=>D[S.lang][k]??k;
-function qMax(){return(S.quranGoals||[]).reduce((s,g)=>s+g.pts,0);}
-function maxSc(wk){return PRAYER_MAX+MANNERS_MAX+(wk?KNOWLEDGE_MAX:0)+qMax()+FASTING_MAX+SUNNAH_MAX;}
+
+function getPrayers() {
+  const p = JSON.parse(JSON.stringify(PRAYERS));
+  if (S.qQiyam > 0) {
+      const label = S.lang==='ar' ? `قيام الليل (${S.qQiyam} ركعات)` : `Qiyam (${S.qQiyam} Rak'ahs)`;
+      p.find(x => x.id === 'night').items.unshift({key:'qiyam', pts:4, customLabel: label});
+  }
+  return p;
+}
+
+function qMax(){return (S.qHifz>0?2:0) + (S.qRecite>0?2:0) + (S.qRevise>0?2:0);}
+function maxSc(wk){
+    const pMax = getPrayers().reduce((s,p)=>s+p.items.reduce((ss,i)=>ss+i.pts,0),0);
+    return pMax + MANNERS_MAX + (wk?KNOWLEDGE_MAX:0) + qMax() + FASTING_MAX + SUNNAH_MAX;
+}
 function getMax(){return maxSc(S.showKnowledge);}
-function dayScore(d){const r=S.records[d]||{};let s=0;for(const p of PRAYERS)for(const sub of p.items)if(r[p.id+'__'+sub.key])s+=sub.pts;for(const m of MANNERS)if(r[m.id])s+=m.pts;if(S.showKnowledge)for(const k of KNOWLEDGE)if(r[k.id])s+=k.pts;for(const g of(S.quranGoals||[]))if(r[g.id])s+=g.pts;for(const f of FASTING)if(r[f.id])s+=f.pts;for(const sn of SUNNAH)if(r[sn.id])s+=sn.pts;return s;}
+
+function dayScore(d){
+    const r=S.records[d]||{};let s=0;
+    const activeP = getPrayers();
+    for(const p of activeP)for(const sub of p.items)if(r[p.id+'__'+sub.key])s+=sub.pts;
+    for(const m of MANNERS)if(r[m.id])s+=m.pts;
+    if(S.showKnowledge)for(const k of KNOWLEDGE)if(r[k.id])s+=k.pts;
+    
+    if(S.qHifz>0 && r['q_hifz']) s+=2;
+    if(S.qRecite>0 && r['q_recite']) s+=2;
+    if(S.qRevise>0 && r['q_revise']) s+=2;
+    
+    for(const f of FASTING)if(r[f.id])s+=f.pts;
+    for(const sn of SUNNAH)if(r[sn.id])s+=sn.pts;
+    return s;
+}
+
 function recAct(){const d=today();if(!S.streakDays.includes(d)){S.streakDays.push(d);if(S.streakDays.length>400)S.streakDays.shift();}}
 function streak(){const ds=new Set(S.streakDays),d=today(),y=new Date();y.setDate(y.getDate()-1);const ys=y.toISOString().split('T')[0];let cur=ds.has(d)?new Date():(ds.has(ys)?y:null);if(!cur)return 0;let n=0;while(true){const s=cur.toISOString().split('T')[0];if(ds.has(s)){n++;cur.setDate(cur.getDate()-1);}else break;}return n;}
 function tog(id){const d=today();if(!S.records[d])S.records[d]={};if(S.records[d][id])delete S.records[d][id];else{S.records[d][id]=true;recAct();}save();renderApp();}
@@ -233,24 +339,50 @@ function ci(id,lbl,pts,done){return'<div class="ci'+(done?' done':'')+'" onclick
 function starBadge(n){return'<div class="starbadge"><svg viewBox="0 0 60 60"><polygon points="30,4 36,22 56,22 40,34 46,54 30,42 14,54 20,34 4,22 24,22"/></svg><span class="snum">'+n+'</span></div>';}
 function renderDateBar(){const d=new Date(),g=new Intl.DateTimeFormat(S.lang==='ar'?'ar-EG':'en-GB',{weekday:'long',day:'numeric',month:'long'}).format(d);let h='';try{const s=new Intl.DateTimeFormat(S.lang==='ar'?'ar-SA':'en-US',{calendar:'islamic',day:'numeric',month:'long',year:'numeric'}).format(d);if(!s.includes('BC')&&!s.includes('ق.م'))h=s;}catch{}document.getElementById('dateBar').innerHTML='<bdi>'+g+'</bdi>'+(h?' | <bdi>'+h+'</bdi>':'');}
 function renderHero(){const sc=dayScore(today()),mx=getMax(),pct=mx>0?Math.round(sc/mx*100):0;document.getElementById('heroScore').textContent=sc;document.getElementById('heroLbl').textContent=t('heroLbl');document.getElementById('heroMax').textContent=mx;document.getElementById('heroMaxLbl').textContent=t('heroMaxLbl');document.getElementById('pctTxt').textContent=pct+'%';document.getElementById('ringFill').style.strokeDashoffset=182.2-(182.2*pct/100);}
+
 function renderToday(el){
   const rec=S.records[today()]||{},str=streak();
   let h='<div class="sbanner"><div><div class="slbl">'+t('streakT')+'</div><div class="sval">'+str+' '+t('streakL')+'</div></div>'+starBadge(str)+'</div>';
-  h+='<div class="stitle">'+t('sp')+' <span class="sbadge">'+PRAYER_MAX+' '+t('pts')+'</span></div>';
-  for(const p of PRAYERS){const pm=p.items.reduce((s,i)=>s+i.pts,0),ps=p.items.reduce((s,i)=>s+(rec[p.id+'__'+i.key]?i.pts:0),0);h+='<div class="pblock"><div class="phead"><span class="pico">'+p.icon+'</span><span class="pname">'+t(p.id)+'</span><span class="ppill">'+ps+'/'+pm+'</span></div>';for(const sub of p.items)h+=ci(p.id+'__'+sub.key,subLbl(p.id,sub.key),sub.pts,!!rec[p.id+'__'+sub.key]);h+='</div>';}
+  
+  const activeP = getPrayers();
+  const pMax = activeP.reduce((s,p)=>s+p.items.reduce((ss,i)=>ss+i.pts,0),0);
+  h+='<div class="stitle">'+t('sp')+' <span class="sbadge">'+pMax+' '+t('pts')+'</span></div>';
+  
+  for(const p of activeP){
+      const ps=p.items.reduce((s,i)=>s+(rec[p.id+'__'+i.key]?i.pts:0),0);
+      const pm=p.items.reduce((s,i)=>s+i.pts,0);
+      h+='<div class="pblock"><div class="phead"><span class="pico">'+p.icon+'</span><span class="pname">'+t(p.id)+'</span><span class="ppill">'+ps+'/'+pm+'</span></div>';
+      for(const sub of p.items){
+          const label = sub.customLabel ? sub.customLabel : subLbl(p.id, sub.key);
+          h+=ci(p.id+'__'+sub.key, label, sub.pts, !!rec[p.id+'__'+sub.key]);
+      }
+      h+='</div>';
+  }
+  
   h+='<div class="stitle">'+t('sm')+' <span class="sbadge">'+MANNERS_MAX+' '+t('pts')+'</span></div><div class="sblock">';
   for(const m of MANNERS)h+=ci(m.id,t(m.id),m.pts,!!rec[m.id]);h+='</div>';
+  
   if(S.showKnowledge){h+='<div class="stitle">'+t('sk')+' <span class="sbadge">'+KNOWLEDGE_MAX+' '+t('pts')+'</span></div><div class="sblock">';for(const k of KNOWLEDGE)h+=ci(k.id,t(k.id),k.pts,!!rec[k.id]);h+='</div>';}
-  const goals=S.quranGoals||[],qm=qMax(),ti={hifz:'📝',recite:'📖',revise:'🔁',listen:'🎧'};
+  
+  const qm=qMax();
   h+='<div class="stitle">'+t('sq')+' <span class="sbadge">'+qm+' '+t('pts')+'</span></div>';
-  if(!goals.length){h+='<div class="sblock"><div style="padding:16px;text-align:center;color:var(--txm);font-size:13px">'+t('q_empty')+'</div></div>';}
-  else{h+='<div class="sblock">';for(const g of goals)h+=ci(g.id,(ti[g.type]||'📖')+' '+g.label,g.pts,!!rec[g.id]);h+='</div>';}
+  if(qm===0){
+    h+='<div class="sblock"><div style="padding:16px;text-align:center;color:var(--txm);font-size:13px">'+t('q_empty')+'</div></div>';
+  }else{
+    h+='<div class="sblock">';
+    if(S.qHifz>0) h+=ci('q_hifz','📝 '+t('qt_hifz')+' '+S.qHifz+' '+t('q_page_unit'),2,!!rec['q_hifz']);
+    if(S.qRecite>0) h+=ci('q_recite','📖 '+t('qt_recite')+' '+S.qRecite+' '+t('q_page_unit'),2,!!rec['q_recite']);
+    if(S.qRevise>0) h+=ci('q_revise','🔁 '+t('qt_revise')+' '+S.qRevise+' '+t('q_page_unit'),2,!!rec['q_revise']);
+    h+='</div>';
+  }
+  
   h+='<div class="stitle">'+t('sf')+' <span class="sbadge">'+FASTING_MAX+' '+t('pts')+'</span></div><div class="sblock">';
   for(const f of FASTING)h+=ci(f.id,t(f.id),f.pts,!!rec[f.id]);h+='</div>';
   h+='<div class="stitle">'+t('ss')+' <span class="sbadge">'+SUNNAH_MAX+' '+t('pts')+'</span></div><div class="sblock">';
   for(const sn of SUNNAH)h+=ci(sn.id,t(sn.id),sn.pts,!!rec[sn.id]);h+='</div>';
   el.innerHTML=h;
 }
+
 function renderWeek(el){
   const mx=getMax(),dn=t('dn'),days=[];
   for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push({str:d.toISOString().split('T')[0],idx:d.getDay(),num:d.getDate(),isToday:i===0});}
@@ -265,35 +397,45 @@ function renderWeek(el){
   for(let i=days.length-1;i>=0;i--){const d=days[i],s=sc[i],pct=mx>0?Math.round(s/mx*100):0;h+='<div style="padding:12px 16px'+(i>0?';border-bottom:1px solid var(--bdr)':'')+'"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-weight:600;font-size:14px">'+dn[d.idx]+' '+d.num+(d.isToday?' <span style="font-size:10px;color:var(--gd);background:var(--gp);padding:1px 6px;border-radius:5px">'+t('todayT')+'</span>':'')+'</span><span style="font-weight:700;font-size:13px;color:var(--gd)">'+s+'/'+mx+' <span style="color:var(--txm);font-weight:400">('+pct+'%)</span></span></div><div class="pw"><div class="pf" style="width:'+pct+'%"></div></div></div>';}
   h+='</div>';el.innerHTML=h;
 }
-function renderSettings(el){
-  const on=S.showKnowledge,mW=maxSc(true),mWo=maxSc(false),goals=S.quranGoals||[];
-  const tc={hifz:'gt-hifz',recite:'gt-recite',revise:'gt-revise',listen:'gt-listen'};
-  const ti={hifz:'📝',recite:'📖',revise:'🔁',listen:'🎧'};
-  let h='<div class="stitle">'+t('sq')+'</div><div class="pblock"><div style="padding:16px">';
-  h+='<div style="font-size:12px;color:var(--txm);margin-bottom:12px;line-height:1.6">'+t('q_hint')+'</div>';
-  if(!goals.length){h+='<div style="text-align:center;color:var(--txm);font-size:13px;padding:10px 0">'+t('q_empty')+'</div>';}
-  else{for(const g of goals){h+='<div class="grow"><span class="gtbadge '+(tc[g.type]||'gt-recite')+'">'+(ti[g.type]||'📖')+' '+t('qt_'+g.type)+'</span><span class="glbl">'+g.label+'</span><span class="gpts">'+g.pts+' '+t('pts')+'</span><button class="gdel" onclick="delGoal(\''+g.id+'\')" title="'+t('q_del')+'">&#215;</button></div>';}}
-  h+='<div class="gaform"><div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:10px">'+t('q_add')+'</div>';
-  h+='<label>'+t('q_tlbl')+'</label><select id="qType"><option value="hifz">'+t('qt_hifz')+'</option><option value="recite">'+t('qt_recite')+'</option><option value="revise">'+t('qt_revise')+'</option><option value="listen">'+t('qt_listen')+'</option></select>';
-  h+='<label>'+t('descLbl')+'</label><input type="text" id="qLabel" placeholder="'+t('q_lph')+'">';
-  h+='<div style="display:flex;gap:8px;align-items:flex-end;margin-top:8px"><div style="flex:1"><label>'+t('q_plbl')+'</label><input type="number" id="qPts" min="1" max="20" value="2"></div><button class="bp" style="flex:1;height:42px" onclick="addGoal()">'+t('q_add')+'</button></div></div></div></div>';
-  h+='<div class="stitle" style="margin-top:24px">'+t('mSecK')+'</div><div class="pblock"><div style="padding:16px">';
-  h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px"><div><div style="font-weight:600;font-size:14px;margin-bottom:4px">'+t('mKDesc')+'</div><div style="font-size:12px;color:var(--txm);line-height:1.6">'+t(on?'mKon':'mKoff')+'</div></div><label class="tgl" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="kToggleInline" '+(on?'checked':'')+' onchange="setKnowledge(this.checked)"><span class="tslider"></span></label></div>';
-  h+='<div style="background:'+(on?'var(--gp)':'var(--sur2)')+';border-radius:10px;padding:12px;font-size:13px;color:'+(on?'var(--gd)':'var(--txm)')+';line-height:1.6;margin-bottom:10px">'+(on?'✅ '+t('maxWith')+': <strong>'+mW+' '+t('ptsuf')+'</strong>':'ℹ️ '+t('maxWO')+': <strong>'+mWo+' '+t('ptsuf')+'</strong>')+'</div>';
-  h+=KNOWLEDGE.map(k=>'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:13px"><span style="'+(on?'':'text-decoration:line-through;color:var(--txm)')+'">'+t(k.id)+'</span><span style="color:var(--gold);font-weight:700">'+k.pts+' '+t('pts')+'</span></div>').join('');
-  h+='</div></div>';
-  h+='<div class="stitle" style="margin-top:24px">'+t('mSecG')+'</div><div class="pblock"><div style="padding:16px">';
-  h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px"><div><div style="font-weight:600;font-size:14px;margin-bottom:4px">'+t('mGDesc')+'</div><div style="font-size:12px;color:var(--txm);line-height:1.6">'+t(S.prayAtHome?'mGon':'mGoff')+'</div></div><label class="tgl" style="flex-shrink:0;margin-top:2px"><input type="checkbox" id="gToggleInline" '+(S.prayAtHome?'checked':'')+' onchange="setPrayAtHome(this.checked)"><span class="tslider"></span></label></div>';
-  h+='<div style="background:'+(S.prayAtHome?'#fdf6e3':'var(--gp)')+';border-radius:10px;padding:12px;font-size:13px;color:'+(S.prayAtHome?'#7a5a10':'var(--gd)')+';line-height:1.6">'+(S.prayAtHome?'🏠':'🕌')+' '+t(S.prayAtHome?'mGon':'mGoff')+'</div></div></div>';
-  h+='<div class="stitle" style="margin-top:24px">'+t('mSecD')+'</div><div class="sblock" style="padding:16px;display:flex;gap:10px"><button class="bo" style="flex:1" onclick="exportData()">'+t('mExp')+'</button><label style="flex:1;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:10px;font-weight:600;font-size:14px;background:var(--gd);color:#fff;padding:10px 16px">'+t('mImp')+'<input type="file" style="display:none" accept=".json" onchange="importData(event)"></label></div>';
-  h+='<div class="stitle" style="margin-top:24px;color:var(--red)">⚠️ '+t('mSecR')+'</div><div class="sblock" style="padding:16px"><p style="font-size:13px;color:var(--txm);margin-bottom:12px">'+t('mRDesc')+'</p><button class="br" style="width:100%" onclick="promptReset()">'+t('mRBtn')+'</button></div>';
-  el.innerHTML=h;
+
+function updQ(k,v){
+  const p=parseFloat(v);
+  S[k]=isNaN(p)||p<0?0:p;
+  save(); 
+  renderApp();
 }
-function addGoal(){const type=document.getElementById('qType')?.value||'recite',label=(document.getElementById('qLabel')?.value||'').trim(),pts=parseInt(document.getElementById('qPts')?.value)||2;if(!label){toast(S.lang==='ar'?'أدخل وصف الهدف':'Enter a goal description');return;}if(!S.quranGoals)S.quranGoals=[];S.quranGoals.push({id:'q_'+Date.now(),type,label,pts});save();renderSettings(document.getElementById('main'));renderHero();}
-function delGoal(id){S.quranGoals=(S.quranGoals||[]).filter(g=>g.id!==id);for(const d of Object.keys(S.records))delete S.records[d][id];save();renderSettings(document.getElementById('main'));renderHero();}
-function setKnowledge(v){S.showKnowledge=v;const a=document.getElementById('kToggle'),b=document.getElementById('kToggleInline');if(a)a.checked=v;if(b)b.checked=v;save();renderApp();}
-function setPrayAtHome(v){S.prayAtHome=v;const a=document.getElementById('gToggle'),b=document.getElementById('gToggleInline');if(a)a.checked=v;if(b)b.checked=v;save();renderApp();}
-function openModal(id){const kt=document.getElementById('kToggle');if(kt)kt.checked=S.showKnowledge;const gt=document.getElementById('gToggle');if(gt)gt.checked=S.prayAtHome;const se=(eid,key)=>{const e=document.getElementById(eid);if(e)e.textContent=t(key);};se('mTitle','mTitle');se('mSecK','mSecK');se('mKDesc','mKDesc');const kh=document.getElementById('mKHint');if(kh)kh.textContent=t(S.showKnowledge?'mKon':'mKoff');se('mSecG','mSecG');se('mGDesc','mGDesc');const gh=document.getElementById('mGHint');if(gh)gh.textContent=t(S.prayAtHome?'mGon':'mGoff');se('mSecD','mSecD');se('mExp','mExp');se('mImp','mImp');se('mSecR','mSecR');se('mRDesc','mRDesc');se('mRBtn','mRBtn');document.getElementById(id).style.display='flex';}
+
+function setKnowledge(v){S.showKnowledge=v;const a=document.getElementById('kToggle');if(a)a.checked=v;save();renderApp();}
+function setPrayAtHome(v){S.prayAtHome=v;const a=document.getElementById('gToggle');if(a)a.checked=v;save();renderApp();}
+
+function openModal(id){
+  if(id === 'settingsModal') {
+      document.getElementById('kToggle').checked=S.showKnowledge;
+      document.getElementById('gToggle').checked=S.prayAtHome;
+      
+      document.getElementById('inp_qHifz').value=S.qHifz;
+      document.getElementById('inp_qRecite').value=S.qRecite;
+      document.getElementById('inp_qRevise').value=S.qRevise;
+      document.getElementById('inp_qQiyam').value=S.qQiyam;
+
+      const se=(eid,key)=>{const e=document.getElementById(eid);if(e)e.textContent=t(key);};
+      se('mTitle','mTitle');se('mSecK','mSecK');se('mKDesc','mKDesc');
+      const kh=document.getElementById('mKHint');if(kh)kh.textContent=t(S.showKnowledge?'mKon':'mKoff');
+      se('mSecG','mSecG');se('mGDesc','mGDesc');
+      const gh=document.getElementById('mGHint');if(gh)gh.textContent=t(S.prayAtHome?'mGon':'mGoff');
+      se('mSecD','mSecD');se('mExp','mExp');se('mImp','mImp');
+      se('mSecR','mSecR');se('mRDesc','mRDesc');se('mRBtn','mRBtn');
+      
+      se('mSecGoals','mSecGoals');
+      se('lbl_hifz','lbl_hifz');
+      se('lbl_recite','lbl_recite');
+      se('lbl_revise','lbl_revise');
+      se('lbl_qiyam','lbl_qiyam');
+      se('mGoalsHint','mGoalsHint');
+  }
+  document.getElementById(id).style.display='flex';
+}
+
 function closeModal(id){document.getElementById(id).style.display='none';}
 function toggleLang(){S.lang=S.lang==='ar'?'en':'ar';document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';save();renderApp();}
 function setName(v){S.userName=v;save();}
@@ -309,7 +451,7 @@ function openTutorial(){
   document.getElementById('tutClose').textContent=t('tutClose');
   document.getElementById('tutorialModal').style.display='flex';
 }
-function renderApp(){renderDateBar();renderHero();document.getElementById('tabToday').textContent=t('today');document.getElementById('tabWeek').textContent=t('week');document.getElementById('tabSettings').textContent=t('settings');document.getElementById('langBtn').textContent=t('langBtn');const ni=document.getElementById('uname');if(ni){ni.placeholder=t('np');if(S.userName)ni.value=S.userName;}const el=document.getElementById('main');if(curTab==='today')renderToday(el);else if(curTab==='week')renderWeek(el);else if(curTab==='settings')renderSettings(el);}
+function renderApp(){renderDateBar();renderHero();document.getElementById('tabToday').textContent=t('today');document.getElementById('tabWeek').textContent=t('week');document.getElementById('langBtn').textContent=t('langBtn');const ni=document.getElementById('uname');if(ni){ni.placeholder=t('np');if(S.userName)ni.value=S.userName;}const el=document.getElementById('main');if(curTab==='today')renderToday(el);else if(curTab==='week')renderWeek(el);}
 document.querySelector('.tabs').addEventListener('click',e=>{const tab=e.target.closest('[data-tab]');if(!tab)return;curTab=tab.dataset.tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderApp();});
 document.querySelectorAll('.mo').forEach(o=>{o.addEventListener('click',e=>{if(e.target!==o)return;if(o.id==='confirmModal')resolveConfirm(false);else closeModal(o.id);});});
 document.documentElement.lang=S.lang;
