@@ -1,6 +1,6 @@
 // Muraqaba Service Worker
 // Bump CACHE_VERSION whenever you deploy an update.
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v11';
 const CACHE_NAME    = `muraqaba-cache-${CACHE_VERSION}`;
 
 const CORE_ASSETS = [
