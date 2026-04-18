@@ -228,18 +228,13 @@ const PRAYERS=[
   {id:'night',icon:'🌌',items:[{key:'wird_night',pts:4},{key:'witr',pts:1}]},
 ];
 
-// Mosque-specific items are filtered out dynamically for women
 const MANNERS=[{id:'wake_up',pts:1},{id:'restroom',pts:1},{id:'clothes_dua',pts:1},{id:'wudu',pts:1},{id:'home_dua',pts:1},{id:'mosque_dua',pts:1},{id:'walk_mosque',pts:1},{id:'food_dua',pts:1},{id:'ride_dua',pts:1},{id:'sleep_dua',pts:1}];
+const MANNERS_MAX=10;
 
-// Knowledge now strictly focuses on class attendance
 const KNOWLEDGE=[{id:'attend_class',pts:5},{id:'review_class',pts:5}];
 
 const FASTING=[{id:'fast_mon_thu',pts:5}];
-
-// Daily Sunnahs
 const SUNNAH=[{id:'sunan_fitra',pts:1},{id:'perfume',pts:1},{id:'miswak',pts:1},{id:'salawat_100',pts:1}];
-
-// Friday-only Sunnahs
 const FRIDAY_SUNNAH=[{id:'ghusl',pts:1},{id:'early_jumuah',pts:1},{id:'surah_kahf',pts:1}];
 
 const D={
@@ -258,7 +253,7 @@ const D={
     ch_empty:'لم تتم إضافة أهداف مخصصة.', ch_lbl_ph:'مثال: قراءة كتاب، ورد إضافي', ch_pts_ph:'النقاط', ch_add:'إضافة',
     streakT:'سلسلة الأيام',streakL:'يوم متواصل',dn:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],wt:'نتائج الأسبوع',ws:'آخر ٧ أيام',todayT:'اليوم',wkTotal:'مجموع الأسبوع',wkBest:'أفضل يوم',wkAvg:'المتوسط',wkBreak:'تفاصيل الأيام',eok:'تم التصدير ✓',iok:'تم الاستيراد ✓',ierr:'فشل الاستيراد.',rw:'سيتم مسح جميع البيانات نهائياً. هل أنت متأكد؟',rok:'تمت إعادة التعيين ✓',ct:'تأكيد',cok:'تأكيد',cno:'إلغاء',
     tutTitle:'كيف تستخدم مراقبة؟',tutClose:'حسناً، فهمت',
-    tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🗓️ التنقل والتحديث التلقائي</h3><p>المجموع الكلي للنقاط (Max Score) يتغير تلقائياً. صيام الإثنين والخميس يظهر فقط في أيامه، وسنن يوم الجمعة تظهر الجمعة فقط، لتتمكن دائماً من تحقيق 100%.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ الأهداف المخصصة</h3><p>من الإعدادات ⚙️، يمكنك الآن إضافة أهداف شخصية إضافية (مثل قراءة كتاب أو ورد إضافي) وتحديد نقاطها.</p>`,
+    tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🗓️ التنقل والتحديث التلقائي</h3><p>يمكنك استخدام الأسهم بجوار التاريخ للرجوع للأيام السابقة وتعديلها. المجموع الكلي للنقاط يتغير تلقائياً (مثال: صيام الإثنين والخميس يظهر فقط في أيامه، وسنن يوم الجمعة تظهر الجمعة فقط) لتتمكن دائماً من تحقيق 100%.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ الإعدادات والأهداف المخصصة</h3><p>اضغط على ⚙️ لتعيين صفحات القرآن وقيام الليل (ضع 0 لإخفاء الهدف). يمكنك أيضاً إضافة أهداف شخصية إضافية (مثل قراءة كتاب) وتحديد نقاطها، أو إخفاء قسم طلب العلم.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🕌 الصلوات</h3><p>الصلوات المفروضة وقيام الليل، لكل صلاة بنودها الخاصة من سنن وأذكار.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌿 الآداب والأذكار</h3><p>عشر بنود يومية كالاستيقاظ، الوضوء، المشي للمسجد (يُخفى تلقائياً في وضع النساء)، وغيرها.</p>`,
     mTitle:'الإعدادات',mSecK:'طلب العلم والأهداف المخصصة',mKDesc:'إظهار قسم طلب العلم (الأساسي)',
     mSecG:'الصلاة',mGDesc:'أصلي في البيت (للنساء)',mGHint:'عند التفعيل، لن تظهر أهداف المشي للمسجد.',mSecD:'البيانات',mExp:'تصدير ⬇',mImp:'استيراد ⬆',mSecR:'⚠️ إعادة تعيين',mRDesc:'مسح جميع البيانات نهائياً.',mRBtn:'إعادة تعيين الكل',
     mSecGoals:'الأهداف اليومية (القرآن والقيام)',lbl_hifz:'حفظ القرآن (صفحات)',lbl_recite:'تلاوة القرآن (صفحات)',lbl_revise:'مراجعة القرآن (صفحات)',lbl_qiyam:'قيام الليل (ركعات)',ch_add_title:'+ إضافة هدف مخصص'
@@ -278,7 +273,7 @@ const D={
     ch_empty:'No custom goals added.', ch_lbl_ph:'e.g. Read a book', ch_pts_ph:'Points', ch_add:'Add',
     streakT:'Streak',streakL:'day streak',dn:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wt:'Weekly Results',ws:'Last 7 days',todayT:'Today',wkTotal:'Week Total',wkBest:'Best Day',wkAvg:'Average',wkBreak:'Daily Breakdown',eok:'Exported ✓',iok:'Imported ✓',ierr:'Import failed.',rw:'All data will be permanently erased. Are you sure?',rok:'Reset complete ✓',ct:'Confirm',cok:'Confirm',cno:'Cancel',
     tutTitle:'How to use Muraqaba',tutClose:'Got it!',
-    tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🗓️ Dynamic Scoring</h3><p>Your daily maximum score adjusts automatically! Friday Sunnahs only appear on Friday, and Fasting only on Mon/Thu, so you can always hit 100%.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ Custom Goals</h3><p>In the Settings ⚙️, you can now add custom habits and assign your own points to them.</p>`,
+    tutBody:`<h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🗓️ Navigation & Dynamic Scoring</h3><p>Use the date arrows to log past days. Your daily max score adjusts automatically! Friday Sunnahs only appear on Friday, and Fasting only on Mon/Thu, so you can always hit 100%.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">⚙️ Settings & Custom Goals</h3><p>Click ⚙️ to set daily pages for Quran and Qiyam Rak'ahs (set 0 to hide). You can also add your own custom habits or hide the Knowledge section.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🕌 Prayers</h3><p>Daily prayers and Night worship, each with its correct Sunnah sub-items.</p><h3 style="color:var(--gd);margin:14px 0 6px;font-family:var(--fd);font-size:16px">🌿 Daily Manners</h3><p>Ten daily items like waking up, wudu, and mosque attendance (hidden in Women's Mode).</p>`,
     mTitle:'Settings',mSecK:'Knowledge & Custom Goals',mKDesc:'Show base Knowledge section',
     mSecG:'Prayer Mode',mGDesc:'I pray at home (for women)',mGHint:'If ON, mosque attendance points are excluded.',mSecD:'Data',mExp:'Export ⬇',mImp:'Import ⬆',mSecR:'⚠️ Reset',mRDesc:'Permanently erase all data.',mRBtn:'Reset All Data',
     mSecGoals:'Daily Goals (Quran & Qiyam)',lbl_hifz:'Memorize Quran (Pages)',lbl_recite:'Recite Quran (Pages)',lbl_revise:'Revise Quran (Pages)',lbl_qiyam:'Qiyam (Rak\'ahs)',ch_add_title:'+ Add Custom Goal'
@@ -504,7 +499,6 @@ function renderToday(el){
       h+='</div>';
   }
   
-  // Manners (filtered for women)
   h+='<div class="stitle">'+t('sm')+' <span class="sbadge">...</span></div><div class="sblock">';
   for(const m of MANNERS){
       if(S.prayAtHome && (m.id==='mosque_dua' || m.id==='walk_mosque')) continue;
@@ -512,7 +506,6 @@ function renderToday(el){
   }
   h+='</div>';
   
-  // Knowledge & Custom Habits
   const custH = S.customHabits || [];
   if(S.showKnowledge || custH.length > 0){
       h+='<div class="stitle">'+t('sk')+' <span class="sbadge">...</span></div><div class="sblock">';
@@ -521,7 +514,6 @@ function renderToday(el){
       h+='</div>';
   }
   
-  // Quran
   const qm=qMax();
   h+='<div class="stitle">'+t('sq')+' <span class="sbadge">'+qm+' '+t('pts')+'</span></div>';
   if(qm===0){
@@ -534,13 +526,11 @@ function renderToday(el){
     h+='</div>';
   }
   
-  // Fasting (Only Mon=1, Thu=4)
   if(dow === 1 || dow === 4){
       h+='<div class="stitle">'+t('sf')+' <span class="sbadge">...</span></div><div class="sblock">';
       for(const f of FASTING)h+=ci(f.id,t(f.id),f.pts,!!rec[f.id]);h+='</div>';
   }
   
-  // Sunnah (Friday separate)
   h+='<div class="stitle">'+t('ss')+' <span class="sbadge">...</span></div><div class="sblock">';
   for(const sn of SUNNAH)h+=ci(sn.id,t(sn.id),sn.pts,!!rec[sn.id]);
   if(dow === 5){
@@ -566,7 +556,6 @@ function renderWeek(el){
   h+='</div></div>';
   const tot=sc.reduce((a,b)=>a+b,0),best=Math.max(...sc);
   
-  // Avg logic
   let sumMax=0;
   for(let i=0;i<days.length;i++) sumMax += getDayMax(days[i].str);
   const avg=sumMax>0?Math.round(tot/sumMax*100):0;
